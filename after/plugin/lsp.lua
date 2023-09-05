@@ -34,6 +34,14 @@ cmp.setup.cmdline(':', {
     })
 })
 
+cmp.setup({
+    -- add border to code completion float
+    window = {
+        completion = cmp.config.window.bordered(),
+        -- documentation = cmp.config.window.bordered(),
+    }
+})
+
 
 lsp.set_preferences({
     sign_icons = {}
@@ -46,20 +54,37 @@ lsp.setup_nvim_cmp({
 lsp.on_attach(function(_client, bufnr)
     local opts = { buffer = bufnr, remap = false }
 
-    vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
-    vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
-    vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
-    vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
-    vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
-    vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
-    vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
-    vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
-    vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
+    -- In this case, we create a function that lets us more easily define mappings specific
+    -- for LSP related items. It sets the mode, buffer and description for us each time.
+    local nmap = function(keys, func, desc)
+        if desc then
+            desc = 'LSP: ' .. desc
+        end
+
+        vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc, remap = false })
+    end
+
+    nmap("<leader>ca", function() vim.lsp.buf.code_action() end, "[C]ode [A]ction")
+    nmap("<leader>rn", function() vim.lsp.buf.rename() end, "[R]e[n]ame")
+
+    -- Go to definitions and references
+    nmap("gd", function() vim.lsp.buf.definition() end, "[G]oto [D]efinition")
+    nmap("gr", function() vim.lsp.buf.references() end, "[G]oto [R]eferences")
+    nmap('gi', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
+    nmap("K", function() vim.lsp.buf.hover() end, "Hover definition")
     vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-    vim.keymap.set("n", "<leader>f", function()
+    nmap("<leader>ws", function() vim.lsp.buf.workspace_symbol() end, "[W]orkspace [S]ymbol")
+
+    -- Errors inspection
+    nmap("<leader>vd", function() vim.diagnostic.open_float() end, "Open Float")
+    nmap("[d", function() vim.diagnostic.goto_next() end, "Goto Next")
+    nmap("]d", function() vim.diagnostic.goto_prev() end, "Goto Prev")
+
+    -- Formatting
+    nmap("<leader>f", function()
         vim.lsp.buf.format { async = true }
         print('formatted')
-    end, opts)
+    end, "[F]ormat")
 end)
 
 -- (Optional) Configure lua language server for neovim
