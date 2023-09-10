@@ -52,10 +52,12 @@ return require('packer').startup(function(use)
             { 'L3MON4D3/LuaSnip' },     -- Required
 
             -- Code Suggestion
-            { 'hrsh7th/cmp-path' },
-            { 'hrsh7th/cmp-nvim-lsp' },
-            { 'hrsh7th/cmp-buffer' },
+            { 'hrsh7th/cmp-path' },   -- For path completion
+            { 'hrsh7th/cmp-buffer' }, -- Source from the buffer
             { 'hrsh7th/cmp-cmdline' },
+            { 'hrsh7th/cmp-nvim-lsp-signature-help' },
+
+            -- Snippet
             { 'saadparwaiz1/cmp_luasnip' },
             { 'rafamadriz/friendly-snippets' }
 
@@ -63,10 +65,11 @@ return require('packer').startup(function(use)
     }
 
     -- Code Navigation
-    use {
-        'ggandor/leap.nvim',
-        config = function() require("leap").set_default_keymaps() end
-    }
+    on_attach = on_attach,
+        use {
+            'ggandor/leap.nvim',
+            config = function() require("leap").set_default_keymaps() end
+        }
 
     -- lualine
     use {
