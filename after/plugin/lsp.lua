@@ -12,16 +12,37 @@ lsp.ensure_installed({
 
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
+local capabilities = require('cmp_nvim_lsp').default_capabilities() --nvim-cmp
+
+-- set up code snippet
+require('luasnip.loaders.from_vscode').lazy_load()
+local luasnip = require('luasnip')
+
 local cmp_mappings = lsp.defaults.cmp_mappings({
     ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
     ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
     ['<C-y>'] = cmp.mapping.confirm({ select = true }),
     ["<C-Space>"] = cmp.mapping.complete(),
-})
-local capabilities = require('cmp_nvim_lsp').default_capabilities() --nvim-cmp
+    -- scroll in document
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
 
--- set up code snippet
-require('luasnip.loaders.from_vscode').lazy_load()
+    -- jump to next snippet placeholder
+    ['<C-k>'] = cmp.mapping(function(fallback)
+        if luasnip.jumpable(1) then
+            luasnip.jump(1)
+        else
+            fallback()
+        end
+    end, { 'i', 's' }),
+    ['<C-j>'] = cmp.mapping(function(fallback)
+        if luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+        else
+            fallback()
+        end
+    end, { 'i', 's' }),
+})
 
 -- `:` cmdline setup.
 cmp.setup.cmdline(':', {
@@ -121,6 +142,7 @@ local lsp_config = require('lspconfig')
 lsp_config.lua_ls.setup(lsp.nvim_lua_ls())
 
 lsp_config.eslint.setup({
+    -- sometimes the document doesn't allow eslint to format it
     on_init = function(client, initialize_result)
         client.resolved_capabilities.document_formatting = true
     end,
