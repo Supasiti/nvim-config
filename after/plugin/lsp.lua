@@ -165,6 +165,18 @@ lsp_config.tsserver.setup({
     }
 })
 
+lsp_config.pyright.setup({
+    -- This is for auto formatting without null-ls
+    on_attach = function(client, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            command = '%!autopep8 --max-line-length 120 -'
+        })
+    end,
+    capabilities = capabilities,
+    filetypes = { "python" }
+})
+
 lsp.format_on_save({
     servers = {
         ['rust_analyzer'] = { 'rust' },
