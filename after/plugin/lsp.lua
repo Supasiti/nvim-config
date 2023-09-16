@@ -143,11 +143,11 @@ lsp_config.lua_ls.setup(lsp.nvim_lua_ls())
 
 lsp_config.eslint.setup({
     -- sometimes the document doesn't allow eslint to format it
-    on_init = function(client, initialize_result)
+    on_init = function(client)
         client.resolved_capabilities.document_formatting = true
     end,
 
-    on_attach = function(client, bufnr)
+    on_attach = function(_, bufnr)
         vim.api.nvim_create_autocmd("BufWritePre", {
             buffer = bufnr,
             command = 'EslintFixAll'
@@ -167,10 +167,20 @@ lsp_config.tsserver.setup({
 
 lsp_config.pyright.setup({
     -- This is for auto formatting without null-ls
-    on_attach = function(client, bufnr)
-        vim.api.nvim_create_autocmd("BufWritePre", {
+    on_attach = function(_, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePost", {
             buffer = bufnr,
-            command = '%!autopep8 --max-line-length 120 -'
+            callback = function(ev)
+                -- Use autopep8 command to change the file and then tell nvim to reload
+                local command = { "autopep8", "--in-place", ev.match, "--max-line-length", "120" }
+                vim.fn.jobstart(command, {
+                    stdout_buffered = true,
+                    on_stdout = function()
+                        vim.cmd("checktime")
+                        print("formatted")
+                    end
+                })
+            end
         })
     end,
     capabilities = capabilities,
