@@ -39,12 +39,17 @@ return require('packer').startup(function(use)
             { 'neovim/nvim-lspconfig' }, -- Required
             {
                 -- Optional
+                -- Automatically install LSPs to stdpath for neovim
                 'williamboman/mason.nvim',
                 run = function()
                     pcall(vim.cmd, 'MasonUpdate')
                 end,
             },
             { 'williamboman/mason-lspconfig.nvim' }, -- Optional
+            {
+                -- Additional config for neovim specific suggestion
+                'folke/neodev.nvim',
+            },
 
             -- Autocompletion
             { 'hrsh7th/nvim-cmp' },     -- Required

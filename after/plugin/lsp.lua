@@ -14,6 +14,10 @@ local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local capabilities = require('cmp_nvim_lsp').default_capabilities() --nvim-cmp
 
+-- Setup neovim lua configuration
+-- Need to be called before lsp_config
+require('neodev').setup()
+
 -- set up code snippet
 require('luasnip.loaders.from_vscode').lazy_load()
 local luasnip = require('luasnip')
@@ -189,6 +193,18 @@ lsp_config.pyright.setup({
     capabilities = capabilities,
     filetypes = { "python" }
 })
+
+-- set file type to jsonc that can support comment
+vim.api.nvim_create_autocmd(
+    { "BufNewFile", "BufRead" },
+    {
+        pattern = "*.json",
+        callback = function()
+            local buf = vim.api.nvim_get_current_buf()
+            vim.api.nvim_buf_set_option(buf, "filetype", "jsonc")
+        end
+    }
+)
 
 lsp.format_on_save({
     servers = {
