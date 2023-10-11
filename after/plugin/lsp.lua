@@ -49,6 +49,7 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
 })
 
 -- `:` cmdline setup.
+---@diagnostic disable-next-line: missing-fields
 cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
@@ -63,8 +64,11 @@ cmp.setup.cmdline(':', {
     })
 })
 
+
+---@diagnostic disable-next-line: missing-fields
 cmp.setup({
     -- completion options
+    ---@diagnostic disable-next-line: missing-fields
     completion = {
         -- menu options: to see more info type :h completeopt
         completeopt = "menu,preview,noselect",
@@ -101,7 +105,7 @@ lsp.setup_nvim_cmp({
     mapping = cmp_mappings
 })
 
-lsp.on_attach(function(_client, bufnr)
+lsp.on_attach(function(_, bufnr)
     local opts = { buffer = bufnr, remap = false }
 
     -- In this case, we create a function that lets us more easily define mappings specific
@@ -205,6 +209,15 @@ vim.api.nvim_create_autocmd(
         end
     }
 )
+
+lsp_config.gopls.setup {
+    settings = {
+        gopls = {
+            buildFlags = { "-tags=session1 session2 session3 session4 session5 session6 session7 session8" }
+        }
+    }
+}
+
 
 lsp.format_on_save({
     servers = {

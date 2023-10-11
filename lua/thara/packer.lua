@@ -92,4 +92,16 @@ return require('packer').startup(function(use)
 
     -- git signs
     use { 'lewis6991/gitsigns.nvim' }
+
+    -- go extension
+    use {
+        "olexsmir/gopher.nvim",
+        ft = "go",
+        config = function(_, opts)
+            require("gopher").setup(opts)
+        end,
+        build = function()
+            vim.cmd [[silent! GoInstallDeps]]
+        end,
+    }
 end)
