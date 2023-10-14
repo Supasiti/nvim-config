@@ -30,51 +30,47 @@ return require('packer').startup(function(use)
     use('mbbill/undotree')
     use('tpope/vim-fugitive')
 
-    -- LSP
-    use {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
-        requires = {
-            -- LSP Support
-            { 'neovim/nvim-lspconfig' }, -- Required
-            {
-                -- Optional
-                -- Automatically install LSPs to stdpath for neovim
-                'williamboman/mason.nvim',
-                run = function()
-                    pcall(vim.cmd, 'MasonUpdate')
-                end,
-            },
-            { 'williamboman/mason-lspconfig.nvim' }, -- Optional
-            {
-                -- Additional config for neovim specific suggestion
-                'folke/neodev.nvim',
-            },
+    ---
+    -- LSP Support
+    ---
+    use('neovim/nvim-lspconfig') -- Required
 
-            -- Autocompletion
-            { 'hrsh7th/nvim-cmp' },     -- Required
-            { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-            { 'L3MON4D3/LuaSnip' },     -- Required
+    -- Automatically install LSPs to stdpath for neovim
+    use('williamboman/mason.nvim', {
+        -- Automatically update on load
+        run = function()
+            pcall(vim.api.nvim_exec2, 'MasonUpdate', { output = false })
+        end,
+    })
+    use('williamboman/mason-lspconfig.nvim') -- To add capabilities to lspconfig
 
-            -- Code Suggestion
-            { 'hrsh7th/cmp-path' },   -- For path completion
-            { 'hrsh7th/cmp-buffer' }, -- Source from the buffer
-            { 'hrsh7th/cmp-cmdline' },
-            { 'hrsh7th/cmp-nvim-lsp-signature-help' },
+    -- Additional config for neovim specific suggestion
+    use('folke/neodev.nvim')
 
-            -- Snippet
-            { 'saadparwaiz1/cmp_luasnip' },
-            { 'rafamadriz/friendly-snippets' }
+    -- Autocompletion
+    use('hrsh7th/nvim-cmp')     -- Required
+    use('hrsh7th/cmp-nvim-lsp') -- Required
+    use('L3MON4D3/LuaSnip')     -- Required
 
-        }
-    }
+    -- Code Suggestion
+    use('hrsh7th/cmp-path')   -- For path completion
+    use('hrsh7th/cmp-buffer') -- Source from the buffer
+    use('hrsh7th/cmp-cmdline')
+    use('hrsh7th/cmp-nvim-lsp-signature-help')
+
+    -- Snippet
+    use('saadparwaiz1/cmp_luasnip')
+    use('rafamadriz/friendly-snippets')
+
+    ---
+    -- Nice to have
+    ---
 
     -- Code Navigation
-    on_attach = on_attach,
-        use {
-            'ggandor/leap.nvim',
-            config = function() require("leap").set_default_keymaps() end
-        }
+    use {
+        'ggandor/leap.nvim',
+        config = function() require("leap").set_default_keymaps() end
+    }
 
     -- lualine
     use {
@@ -85,9 +81,7 @@ return require('packer').startup(function(use)
     -- toggle comment - gcc for line and gbc for block
     use {
         'numToStr/Comment.nvim',
-        config = function()
-            require('Comment').setup()
-        end
+        config = function() require('Comment').setup() end
     }
 
     -- git signs

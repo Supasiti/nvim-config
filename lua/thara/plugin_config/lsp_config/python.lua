@@ -21,7 +21,6 @@ lsp_config.pyright.setup({
             callback = format_py
         })
     end,
-    -- capabilities = capabilities,
     filetypes = { "python" }
 })
 
