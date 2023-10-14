@@ -118,21 +118,23 @@ lsp.on_attach(function(_, bufnr)
         vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc, remap = false })
     end
 
-    nmap("<leader>ca", function() vim.lsp.buf.code_action() end, "[C]ode [A]ction")
-    nmap("<leader>rn", function() vim.lsp.buf.rename() end, "[R]e[n]ame")
+    nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+    nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
 
     -- Go to definitions and references
-    nmap("gd", function() vim.lsp.buf.definition() end, "[G]oto [D]efinition")
-    nmap("gr", function() vim.lsp.buf.references() end, "[G]oto [R]eferences")
-    nmap('gi', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-    nmap("K", function() vim.lsp.buf.hover() end, "Hover definition")
+    nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+    nmap("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
+    nmap('gi', vim.lsp.buf.implementation, "[G]oto [I]mplementation")
+    nmap('gt', vim.lsp.buf.type_definition, "[G]oto [T]ype Definition")
+    nmap("K", vim.lsp.buf.hover, "Hover definition")
     vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
     nmap("<leader>ws", function() vim.lsp.buf.workspace_symbol() end, "[W]orkspace [S]ymbol")
 
     -- Errors inspection
-    nmap("<leader>vd", function() vim.diagnostic.open_float() end, "Open Float")
-    nmap("[d", function() vim.diagnostic.goto_next() end, "Goto Next")
-    nmap("]d", function() vim.diagnostic.goto_prev() end, "Goto Prev")
+    nmap("<leader>vdK", vim.diagnostic.open_float, "Open [F]loat")
+    nmap("<leader>vdn", vim.diagnostic.goto_next, "Goto [N]ext")
+    nmap("<leader>vdp", vim.diagnostic.goto_prev, "Goto [P]rev")
+    nmap("<leader>vdl", "<cmd>Telescope diagnostics<cr>", "[L]ist")
 
     -- Restart server
     nmap("<leader>rs", ":LspRestart<CR>", "[R]estart [S]erver")
@@ -149,20 +151,6 @@ local lsp_config = require('lspconfig')
 
 lsp_config.lua_ls.setup(lsp.nvim_lua_ls())
 
-lsp_config.eslint.setup({
-    -- sometimes the document doesn't allow eslint to format it
-    on_init = function(client)
-        client.resolved_capabilities.document_formatting = true
-    end,
-
-    on_attach = function(_, bufnr)
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            command = 'EslintFixAll'
-        })
-    end
-})
-
 lsp_config.tsserver.setup({
     capabilities = capabilities,
     settings = {
@@ -171,31 +159,6 @@ lsp_config.tsserver.setup({
             completeFunctionCalls = true
         }
     }
-})
-
-local format_py = function(ev)
-    -- Use autopep8 command to change the file and then tell nvim to reload
-    local command = { "autopep8", "--in-place", ev.match, "--max-line-length", "120" }
-    vim.fn.jobstart(command, {
-        stdout_buffered = true,
-        on_stdout = function()
-            -- Use :checktime to sync buffer with the file that is just written by autopep8
-            vim.cmd("checktime")
-            print("formatted")
-        end
-    })
-end
-
-lsp_config.pyright.setup({
-    -- This is for auto formatting without null-ls
-    on_attach = function(_, bufnr)
-        vim.api.nvim_create_autocmd("BufWritePost", {
-            buffer = bufnr,
-            callback = format_py
-        })
-    end,
-    capabilities = capabilities,
-    filetypes = { "python" }
 })
 
 -- set file type to jsonc that can support comment
