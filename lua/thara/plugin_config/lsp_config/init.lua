@@ -1,2 +1,6 @@
 require("thara.plugin_config.lsp_config.eslint")
+require("thara.plugin_config.lsp_config.golang")
 require("thara.plugin_config.lsp_config.python")
+require("thara.plugin_config.lsp_config.json")
+require("thara.plugin_config.lsp_config.lua_ls")
+require("thara.plugin_config.lsp_config.typescript")

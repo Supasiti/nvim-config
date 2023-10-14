@@ -1,5 +1,6 @@
 require("thara.plugin_config.color")
 require("thara.plugin_config.comment")
+require("thara.plugin_config.completions")
 require("thara.plugin_config.fugitive")
 require("thara.plugin_config.gitsigns")
 require("thara.plugin_config.harpoon")

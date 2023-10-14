@@ -1,109 +1,30 @@
 local lsp = require('lsp-zero').preset('recommended')
 
-lsp.ensure_installed({
-    'tsserver',
-    'eslint',
-    'html',
-    'jsonls',
-    'gopls',
-    'lua_ls',
-    'rust_analyzer'
-})
-
-local cmp = require('cmp')
-local cmp_select = { behavior = cmp.SelectBehavior.Select }
-local capabilities = require('cmp_nvim_lsp').default_capabilities() --nvim-cmp
+require("mason-lspconfig").setup {
+    ensure_installed = {
+        'tsserver',
+        'eslint',
+        'html',
+        'jsonls',
+        'gopls',
+        'lua_ls',
+        'rust_analyzer'
+    }
+}
 
 -- Setup neovim lua configuration
 -- Need to be called before lsp_config
 require('neodev').setup()
 
--- set up code snippet
-require('luasnip.loaders.from_vscode').lazy_load()
-local luasnip = require('luasnip')
+-- set default capabilities for all lsp
+local lsp_config = require('lspconfig')
+local lsp_defaults = lsp_config.util.default_config
 
-local cmp_mappings = lsp.defaults.cmp_mappings({
-    ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-    ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-    ["<C-Space>"] = cmp.mapping.complete(),
-    -- scroll in document
-    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-d>'] = cmp.mapping.scroll_docs(4),
-
-    -- jump to next snippet placeholder
-    ['<C-k>'] = cmp.mapping(function(fallback)
-        if luasnip.jumpable(1) then
-            luasnip.jump(1)
-        else
-            fallback()
-        end
-    end, { 'i', 's' }),
-    ['<C-j>'] = cmp.mapping(function(fallback)
-        if luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-        else
-            fallback()
-        end
-    end, { 'i', 's' }),
-})
-
--- `:` cmdline setup.
----@diagnostic disable-next-line: missing-fields
-cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-        { name = 'path' }
-    }, {
-        {
-            name = 'cmdline',
-            option = {
-                ignore_cmds = { 'Man', '!' }
-            }
-        }
-    })
-})
-
-
----@diagnostic disable-next-line: missing-fields
-cmp.setup({
-    -- completion options
-    ---@diagnostic disable-next-line: missing-fields
-    completion = {
-        -- menu options: to see more info type :h completeopt
-        completeopt = "menu,preview,noselect",
-    },
-    -- add border to code completion float
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
-    -- ordering is important
-    sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
-        { name = 'path' },
-        { name = 'luasnip' },                 -- For luasnip users.
-        { name = 'nvim_lsp_signature_help' }, -- For function signature help
-        {
-            name = 'buffer',
-            keyword_length = 5
-        },
-    }),
-    experimental = {
-        native_menu = false,
-        -- show the lighten test before select
-        ghost_text = true,
-    },
-})
-
-
-lsp.set_preferences({
-    sign_icons = {}
-})
-
-lsp.setup_nvim_cmp({
-    mapping = cmp_mappings
-})
+lsp_defaults.capabilities = vim.tbl_deep_extend(
+    'force',
+    lsp_defaults.capabilities, -- default capabilities 
+    require('cmp_nvim_lsp').default_capabilities() -- additional capabilities from completions
+)
 
 lsp.on_attach(function(_, bufnr)
     local opts = { buffer = bufnr, remap = false }
@@ -146,41 +67,15 @@ lsp.on_attach(function(_, bufnr)
     end, "[F]ormat")
 end)
 
--- (Optional) Configure lua language server for neovim
-local lsp_config = require('lspconfig')
 
-lsp_config.lua_ls.setup(lsp.nvim_lua_ls())
-
-lsp_config.tsserver.setup({
-    capabilities = capabilities,
-    settings = {
-        -- auto fill function signature
-        completions = {
-            completeFunctionCalls = true
-        }
-    }
-})
-
--- set file type to jsonc that can support comment
-vim.api.nvim_create_autocmd(
-    { "BufNewFile", "BufRead" },
-    {
-        pattern = "*.json",
-        callback = function()
-            local buf = vim.api.nvim_get_current_buf()
-            vim.api.nvim_buf_set_option(buf, "filetype", "jsonc")
-        end
-    }
-)
-
-lsp_config.gopls.setup {
-    settings = {
-        gopls = {
-            buildFlags = { "-tags=session1 session2 session3 session4 session5 session6 session7 session8" }
-        }
-    }
-}
-
+-- lsp_config.tsserver.setup({
+--     settings = {
+--         -- auto fill function signature
+--         completions = {
+--             completeFunctionCalls = true
+--         }
+--     }
+-- })
 
 lsp.format_on_save({
     servers = {
