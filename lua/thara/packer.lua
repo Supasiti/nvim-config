@@ -37,7 +37,7 @@ return require('packer').startup(function(use)
 
     -- Automatically install LSPs to stdpath for neovim
     use('williamboman/mason.nvim', {
-        -- Automatically update on load
+        -- Post-install update 
         run = function()
             pcall(vim.api.nvim_exec2, 'MasonUpdate', { output = false })
         end,

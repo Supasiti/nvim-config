@@ -2,6 +2,7 @@
 vim.api.nvim_create_autocmd(
     { "BufNewFile", "BufRead" },
     {
+        group = vim.api.nvim_create_augroup('JsonSetFileType', { clear = true }),
         pattern = "*.json",
         callback = function()
             local buf = vim.api.nvim_get_current_buf()
@@ -9,4 +10,3 @@ vim.api.nvim_create_autocmd(
         end
     }
 )
-

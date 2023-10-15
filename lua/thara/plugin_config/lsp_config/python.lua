@@ -17,10 +17,10 @@ lsp_config.pyright.setup({
     -- This is for auto formatting without null-ls
     on_attach = function(_, bufnr)
         vim.api.nvim_create_autocmd("BufWritePost", {
+            group = vim.api.nvim_create_augroup('PythonFormat', { clear = true }),
             buffer = bufnr,
             callback = format_py
         })
     end,
     filetypes = { "python" }
 })
-

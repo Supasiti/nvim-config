@@ -32,7 +32,7 @@ lsp_config.gopls.setup {
     },
     on_attach = function(_, bufnr)
         vim.api.nvim_create_autocmd("BufWritePre", {
-            group = vim.api.nvim_create_augroup("GoFormat", {}),
+            group = vim.api.nvim_create_augroup("GoFormat", { clear = true }),
             buffer = bufnr,
             callback = format_go,
         })
