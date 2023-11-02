@@ -18,12 +18,7 @@ require('neodev').setup()
 -- Set up default capabilities for all LSPs
 local lsp_config = require('lspconfig')
 local lsp_defaults = lsp_config.util.default_config
-
-lsp_defaults.capabilities = vim.tbl_deep_extend(
-    'force',
-    lsp_defaults.capabilities,                     -- default capabilities
-    require('cmp_nvim_lsp').default_capabilities() -- additional capabilities from completions
-)
+lsp_defaults.capabilities = require('cmp_nvim_lsp').default_capabilities(lsp_defaults.capabilities) -- additional capabilities from completions
 
 -- Additional key binding associated with LSP
 -- with auto command
@@ -47,21 +42,22 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         -- Go to definitions and references
         nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
-        nmap("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
+        nmap("gr", require('telescope.builtin').lsp_references, "[G]oto [R]eferences")
         nmap('gi', vim.lsp.buf.implementation, "[G]oto [I]mplementation")
         nmap('gt', vim.lsp.buf.type_definition, "[G]oto [T]ype Definition")
         nmap("K", vim.lsp.buf.hover, "Hover definition")
-        nmap("<leader>ws", vim.lsp.buf.workspace_symbol, "[W]orkspace [S]ymbol")
+        nmap("<leader>ws", require('telescope.builtin').lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbol")
+        nmap("<leader>ds", require('telescope.builtin').lsp_document_symbols, "[D]ocument [S]ymbol")
         vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 
         -- Errors inspection
-        nmap("<leader>vdK", vim.diagnostic.open_float, "Open [F]loat")
-        nmap("<leader>vdn", vim.diagnostic.goto_next, "Goto [N]ext")
-        nmap("<leader>vdp", vim.diagnostic.goto_prev, "Goto [P]rev")
-        nmap("<leader>vdl", "<cmd>Telescope diagnostics<cr>", "[L]ist")
+        nmap("<leader>vd", vim.diagnostic.open_float, "Open [F]loat")
+        nmap("<leader>vn", vim.diagnostic.goto_next, "Goto [N]ext")
+        nmap("<leader>vp", vim.diagnostic.goto_prev, "Goto [P]rev")
+        nmap("<leader>vl", "<cmd>Telescope diagnostics<cr>", "[L]ist")
 
         -- Restart server
-        nmap("<leader>rs", ":LspRestart<CR>", "[R]estart [S]erver")
+        nmap("<leader>rs", "<cmd>LspRestart<CR>", "[R]estart [S]erver")
 
         -- Formatting
         nmap("<leader>f", function()

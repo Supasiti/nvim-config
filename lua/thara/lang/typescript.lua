@@ -4,7 +4,12 @@ require("lspconfig").tsserver.setup {
         completions = {
             completeFunctionCalls = true
         }
-    }
+    },
+    init_options = {
+        preferences = {
+            disableSuggestions = true,
+        }
+    },
 }
 
 ---
@@ -130,4 +135,3 @@ vim.api.nvim_create_user_command("JestRun", function()
         end
     })
 end, {})
-

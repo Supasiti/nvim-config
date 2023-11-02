@@ -33,11 +33,22 @@ return require('packer').startup(function(use)
     ---
     -- LSP Support
     ---
-    use('neovim/nvim-lspconfig') -- Required
+    use {  -- Required
+        'neovim/nvim-lspconfig',
+        requires = {
+            {   -- Optional status updates for LSP
+                'j-hui/fidget.nvim',
+                tag = 'legacy',
+                config = function()
+                    require('fidget').setup {}
+                end,
+            },
+        },
+    }
 
     -- Automatically install LSPs to stdpath for neovim
     use('williamboman/mason.nvim', {
-        -- Post-install update 
+        -- Post-install update
         run = function()
             pcall(vim.api.nvim_exec2, 'MasonUpdate', { output = false })
         end,
