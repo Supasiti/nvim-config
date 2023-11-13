@@ -22,7 +22,7 @@ require 'nvim-treesitter.configs'.setup {
         -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
         -- the name of the parser)
         -- list of language that will be disabled
-        disable = { "javascript" },
+        disable = { "javascript", "markdown" },
         -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
         -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
         -- Using this option may slow down your editor, and you may see some duplicate highlights.
@@ -30,3 +30,15 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = false,
     },
 }
+
+-- additional set up for templ
+local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+parser_config.templ = {
+    install_info = {
+        url = "https://github.com/vrischmann/tree-sitter-templ.git",
+        files = { "src/parser.c", "src/scanner.c" },
+        branch = "master",
+    },
+}
+
+vim.treesitter.language.register('templ', 'templ')

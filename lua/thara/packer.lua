@@ -33,18 +33,7 @@ return require('packer').startup(function(use)
     ---
     -- LSP Support
     ---
-    use {  -- Required
-        'neovim/nvim-lspconfig',
-        requires = {
-            {   -- Optional status updates for LSP
-                'j-hui/fidget.nvim',
-                tag = 'legacy',
-                config = function()
-                    require('fidget').setup {}
-                end,
-            },
-        },
-    }
+    use 'neovim/nvim-lspconfig'
 
     -- Automatically install LSPs to stdpath for neovim
     use('williamboman/mason.nvim', {
@@ -109,4 +98,10 @@ return require('packer').startup(function(use)
             vim.cmd [[silent! GoInstallDeps]]
         end,
     }
+
+    -- templ extension
+    use "vrischmann/tree-sitter-templ"
+
+    -- markdown
+    use "plasticboy/vim-markdown"
 end)
