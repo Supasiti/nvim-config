@@ -1,4 +1,4 @@
--- This file can be loaded by calling `lua require('plugins')` from your init.vim
+--_config This file can be loaded by calling `lua require('plugins')` from your init.vim
 
 -- Only required if you have packer configured as `opt`
 vim.cmd [[packadd packer.nvim]]
@@ -104,4 +104,11 @@ return require('packer').startup(function(use)
 
     -- markdown
     use "plasticboy/vim-markdown"
+
+    -- Highlight todo, notes, etc in comments
+    use {
+        'folke/todo-comments.nvim',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        opts = { signs = false }
+    }
 end)
