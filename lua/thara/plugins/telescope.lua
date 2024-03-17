@@ -13,10 +13,6 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' })
 vim.keymap.set('n', '<leader>fg', require("telescope").extensions.live_grep_args.live_grep_args,
     { noremap = true, desc = '[F]ind [G]rep in folder' })
 
-vim.keymap.set('n', '<leader>/', function()
-    -- You  can pass additional configuration to telescope to change theme, layout, etc.
-    builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-        winblend = 10,
-        previewer = false,
-    })
-end, { desc = '[/] Fuzzily search in current buffer' })
+-- Allow to search within the buffer
+vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find,
+    { desc = '[/] Fuzzily search in current buffer' })
