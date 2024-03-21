@@ -14,10 +14,8 @@ return require('packer').startup(function(use)
         requires = {
             { 'nvim-lua/plenary.nvim' },
             { "nvim-telescope/telescope-live-grep-args.nvim" },
+            { 'nvim-telescope/telescope-ui-select.nvim' },
         },
-        config = function()
-            require("telescope").load_extension("live_grep_args")
-        end
     }
 
     -- rose pine colour scheme

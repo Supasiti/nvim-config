@@ -16,3 +16,17 @@ vim.keymap.set('n', '<leader>fg', require("telescope").extensions.live_grep_args
 -- Allow to search within the buffer
 vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find,
     { desc = '[/] Fuzzily search in current buffer' })
+
+
+require('telescope').setup {
+    extensions = {
+        ['ui-select'] = {
+            require('telescope.themes').get_dropdown(),
+        },
+    },
+}
+
+-- Enable Telescope extensions if they are installed
+pcall(require('telescope').load_extension, 'ui-select')
+pcall(require('telescope').load_extension, 'live_grep_args')
+
