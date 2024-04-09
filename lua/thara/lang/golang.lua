@@ -16,3 +16,5 @@ lsp_config.gopls.setup {
     },
     on_attach = fmt.attach_formatter("GoFormat"),
 }
+
+vim.keymap.set("n", "<leader>ee", "oif err != nil {<CR>}<Esc>Oreturn err<Esc>")
