@@ -17,4 +17,16 @@ lsp_config.gopls.setup {
     on_attach = fmt.attach_formatter("GoFormat"),
 }
 
-vim.keymap.set("n", "<leader>ee", "oif err != nil {<CR>}<Esc>Oreturn err<Esc>")
+vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = { "*.go" },
+    group = vim.api.nvim_create_augroup("Gopher", { clear = true }),
+    callback = function()
+        vim.notify("set keymaps for Go")
+        vim.keymap.set("n", "<leader>ee", "oif err != nil {<CR>}<Esc>Oreturn err<Esc>")
+
+        local gopher = require('thara.lang.gopher')
+
+        -- add Go specific commands
+        vim.api.nvim_create_user_command("GoAddTest", gopher.add_test, {})
+    end
+})
