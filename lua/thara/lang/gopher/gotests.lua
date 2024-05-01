@@ -1,3 +1,4 @@
+local ui = require('thara.lang.gopher.ui')
 local M = {}
 
 -- return the root of tree
@@ -65,7 +66,7 @@ local function get_func_name_on_cursor()
     for _, match in query:iter_matches(root, bufnr, 0, -1) do
         local name, dec_node
 
-        -- there should only be two types of nodes 
+        -- there should only be two types of nodes
         -- name or declaration
         for id, node in pairs(match) do
             local c = query.captures[id]
@@ -100,7 +101,6 @@ end
 
 function M.add_test()
     local fpath = vim.fn.expand "%"
-    vim.notify(fpath)
 
     -- local fn_name = "^String$"
     local fn_name = get_func_name_on_cursor()
@@ -111,11 +111,50 @@ function M.add_test()
     local pattern = "^" .. fn_name .. "$"
 
     local cmd = { "gotests", "-only", pattern, "-template", "testify", "-w", fpath }
-    vim.fn.jobstart(cmd,{
+    vim.fn.jobstart(cmd, {
         on_exit = function()
             -- Use :checktime to sync buffer with the file that is just written by gotests
             vim.cmd("checktime")
             vim.notify("unit test(s) generated")
+        end
+    })
+end
+
+-- @param test_flags string[]
+function M.run_test(test_flags)
+    local fpath = vim.fn.expand "%"
+    local first_char = string.sub(fpath, 1, 1)
+    if first_char ~= "." and first_char ~= "/" then
+        fpath = "./" .. fpath
+    end
+    local dir = vim.fs.dirname(fpath)
+
+    -- local fn_name = "^String$"
+    local fn_name = get_func_name_on_cursor()
+    if fn_name == nil then
+        return
+    end
+
+    local pattern = "^" .. fn_name .. "$"
+    local cmd = { "go", "test" }
+
+    if test_flags ~= nil then
+        for _, value in ipairs(test_flags) do
+            table.insert(cmd, value)
+        end
+    end
+
+    table.insert(cmd, "-run")
+    table.insert(cmd, pattern)
+    table.insert(cmd, dir)
+
+    vim.fn.jobstart(cmd, {
+        stdout_buffered = true,
+        on_stdout = function(_, data)
+            -- data is a table a line
+            if data then
+                ui.show_popup(data)
+            end
         end
     })
 end

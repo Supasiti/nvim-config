@@ -1,8 +1,7 @@
 local M = {}
 local gt = require "thara.lang.gopher.gotests"
 
-function M.add_test()
-    gt.add_test()
-end
+M.add_test = gt.add_test
+M.run_test = gt.run_test
 
 return M
