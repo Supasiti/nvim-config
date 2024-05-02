@@ -12,7 +12,7 @@ end
 
 -- @param content string[] array of lines
 function M.show_popup(content)
-    local height = 32
+    local height = 28
     local px = 40
     local width = vim.o.columns - (2 * px)
     local borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
@@ -22,7 +22,9 @@ function M.show_popup(content)
         highlight = "OutputWindow",
         line = math.floor(((vim.o.lines - height) / 2) - 1),
         col = px,
-        minwidth = width,
+        maxwidth = width,
+        width = width,
+        maxheight = height,
         minheight = height,
         borderchars = borderchars,
     })
