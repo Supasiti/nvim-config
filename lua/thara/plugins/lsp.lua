@@ -18,7 +18,11 @@ require('neodev').setup()
 -- Set up default capabilities for all LSPs
 local lsp_config = require('lspconfig')
 local lsp_defaults = lsp_config.util.default_config
-lsp_defaults.capabilities = require('cmp_nvim_lsp').default_capabilities(lsp_defaults.capabilities) -- additional capabilities from completions
+lsp_defaults.capabilities = vim.tbl_deep_extend(
+    'force',
+    lsp_defaults.capabilities,                     -- default capabilities
+    require('cmp_nvim_lsp').default_capabilities() -- additional capabilities from completions
+)
 
 -- Additional key binding associated with LSP
 -- with auto command
