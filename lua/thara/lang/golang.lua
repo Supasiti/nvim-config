@@ -5,7 +5,7 @@ local settings = {
     analyses = {
         unusedparams = true,
     },
-    buildFlags = { "-tags=session0 session1 session2 session3 session4 session5 session6 session7 session8" },
+    buildFlags = { "-tags=session0 session1 session2 session3 session4 session5 session6 session6Bonus session7 session8" },
     staticcheck = true,
 }
 local test_flags = { "-tags", "session0 session1 session2" }
