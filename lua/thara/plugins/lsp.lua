@@ -7,7 +7,6 @@ require("mason-lspconfig").setup {
         'jsonls',
         'gopls',
         'lua_ls',
-        'rust_analyzer'
     }
 }
 
